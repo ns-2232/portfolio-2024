@@ -134,9 +134,29 @@ new simpleParallax(image, {
 
 // home→work画面移行
 const workBtn = document.querySelector('.nav_menu_work');
-const slider = document.querySelector('.swiper');
+const workCategories = document.querySelector('.work_categories');
+const workGallery = document.querySelector('.work_gallery');
+const workDetails = document.querySelectorAll('.work_detail');
+const workCategoryButtons = document.querySelectorAll('.work_category');
+
+function randomizeWorkCategoryMotion() {
+    workCategoryButtons.forEach((button) => {
+        const delay = Math.random() * 0.8;
+        const rotation = 1 + Math.random() * 2;
+        button.style.setProperty('--appear-delay', `${delay.toFixed(2)}s`);
+        button.style.setProperty('--float-duration', `${(3.2 + Math.random() * 2.8).toFixed(2)}s`);
+        button.style.setProperty('--float-distance', `${-(0.5 + Math.random() * 1.2).toFixed(2)}vw`);
+        button.style.setProperty('--float-start-rotation', `${rotation.toFixed(2)}deg`);
+        button.style.setProperty('--float-end-rotation', `${(-rotation).toFixed(2)}deg`);
+    });
+}
+
 function workClick() {
     stalkerDisplay = false;
+    window.scroll({
+        top: 0,
+        behavior: "smooth",
+    });
     navNone();
     stalker.style.right = 'calc(120vw)';
     setTimeout(() => {
@@ -144,17 +164,24 @@ function workClick() {
         stalker.style.display = 'none';
     }, "2000");
     setTimeout(() => {
-        slider.classList.toggle('none');
-        slider.classList.toggle('show');
+        randomizeWorkCategoryMotion();
+        workCategories.classList.remove('none');
+        workCategories.classList.add('show');
     }, "3500");
 };
 
 // work→home画面移行
 const backWorkBtn = document.querySelector('.back_work');
 function backWorkClick() {
+    workCategories.classList.remove('show');
+    workCategories.classList.add('none');
+    workGallery.classList.remove('show');
+    workGallery.classList.add('none');
+    workDetails.forEach((detail) => {
+        detail.classList.remove('show');
+        detail.classList.add('none');
+    });
     container.classList.remove('work-area');
-    slider.classList.toggle('none');
-    slider.classList.toggle('show');
     setTimeout(() => {
         stalker.style.display = 'block';
         stalkerImg.classList.add('right');
@@ -166,47 +193,64 @@ function backWorkClick() {
     }, "3500");
 };
 
-//swiper
-const workSwiper = new Swiper('.swiper', {
-    direction: "vertical",
-    spaceBetween: 32,
-    slidesPerView: 1.3,
-    watchSlidesProgress: true,
-    loop: true,
-    loopAdditionalSlides: 1,
-    centeredSlides: true,
-    speed: 1000,
-    pagination: {
-        el: ".swiper-pagination",
-        clickable: true,
-    },
-    navigation: {
-        nextEl: ".swiper-button-next",
-        prevEl: ".swiper-button-prev",
-    },
-});
-
-//workモーダル開閉
-let modalBtns = document.querySelectorAll(".modal-open");
-modalBtns.forEach(function (btn) {
-  btn.onclick = function () {
-    let modal = btn.getAttribute('data-modal');
-    document.getElementById(modal).classList.toggle('none');
-    document.getElementById(modal).classList.classList.toggle('show');
-  };
-});
-
-let closeBtns = document.querySelectorAll(".modal-close");
-closeBtns.forEach(function (btn) {
-  btn.onclick = function () {
-    let modal = btn.getAttribute('data-modal');
-    document.getElementById(modal).classList.toggle('none');
-    document.getElementById(modal).classList.classList.toggle('show');
-  };
-});
-
-window.onclick = function (event) {
-  if (event.target.className === "modal") {
-    event.target.style.display = "none";
-  }
+// カテゴリから実績一覧へ
+const galleryTitles = {
+    'web-gallery': 'Web',
+    'graphic-gallery': 'グラフィック',
+    'illustration-gallery': 'イラスト',
 };
+
+document.querySelectorAll('.work_category').forEach((button) => {
+    button.addEventListener('click', () => {
+        const galleryId = button.dataset.gallery;
+        const panel = document.getElementById(galleryId);
+        if (!panel) {
+            console.error(`WORK gallery not found: ${galleryId}`);
+            return;
+        }
+
+        workCategories.classList.remove('show');
+        workCategories.classList.add('none');
+        workGallery.querySelector('.work_gallery-title').textContent = galleryTitles[galleryId];
+        workGallery.querySelectorAll('.work_gallery-panel').forEach((galleryPanel) => {
+            galleryPanel.classList.add('none');
+        });
+        panel.classList.remove('none');
+        workGallery.classList.remove('none');
+        workGallery.classList.add('show');
+    });
+});
+
+document.querySelector('.work_back-category').addEventListener('click', () => {
+    workGallery.classList.remove('show');
+    workGallery.classList.add('none');
+    randomizeWorkCategoryMotion();
+    workCategories.classList.remove('none');
+    workCategories.classList.add('show');
+});
+
+// 実績一覧から詳細へ
+document.querySelectorAll('.work_card').forEach((button) => {
+    button.addEventListener('click', () => {
+        const detail = document.getElementById(button.dataset.detail);
+        if (!detail) {
+            console.error(`WORK detail not found: ${button.dataset.detail}`);
+            return;
+        }
+
+        workGallery.classList.remove('show');
+        workGallery.classList.add('none');
+        detail.classList.remove('none');
+        detail.classList.add('show');
+    });
+});
+
+document.querySelectorAll('.detail-close').forEach((button) => {
+    button.addEventListener('click', () => {
+        const detail = button.closest('.work_detail');
+        detail.classList.remove('show');
+        detail.classList.add('none');
+        workGallery.classList.remove('none');
+        workGallery.classList.add('show');
+    });
+});
