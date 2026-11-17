@@ -693,6 +693,10 @@ h2 {
     border-radius: .6em;
     background-color: #e7d8c6;
 }
+.work_project-image img {
+    object-fit: cover;
+    object-position: center top;
+}
 .work_card-title {
     display: block;
     margin-top: .5em;
@@ -706,6 +710,39 @@ h2 {
     aspect-ratio: 16 / 9;
     margin: 0 auto 2em;
     border-radius: 1em;
+}
+.work_detail_project-images {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+    gap: 1.5em;
+    margin-bottom: 2em;
+}
+.work_detail_project-images_single {
+    max-width: 760px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.work_detail_project-images figure {
+    min-width: 0;
+    margin: 0;
+    text-align: center;
+}
+.work_detail_project-images a {
+    display: block;
+    overflow: hidden;
+    border-radius: .6em;
+    background: #fff;
+}
+.work_detail_project-images img {
+    display: block;
+    width: 100%;
+    height: clamp(220px, 52vh, 620px);
+    object-fit: cover;
+    object-position: center top;
+}
+.work_detail_project-images figcaption {
+    margin-top: .5em;
+    font-weight: bold;
 }
 .more button {
     display: inline-block;
