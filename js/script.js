@@ -245,12 +245,23 @@ document.querySelectorAll('.work_card').forEach((button) => {
     });
 });
 
+function closeWorkDetail(detail) {
+    detail.classList.remove('show');
+    detail.classList.add('none');
+    workGallery.classList.remove('none');
+    workGallery.classList.add('show');
+}
+
 document.querySelectorAll('.detail-close').forEach((button) => {
     button.addEventListener('click', () => {
-        const detail = button.closest('.work_detail');
-        detail.classList.remove('show');
-        detail.classList.add('none');
-        workGallery.classList.remove('none');
-        workGallery.classList.add('show');
+        closeWorkDetail(button.closest('.work_detail'));
+    });
+});
+
+document.querySelectorAll('.work_detail').forEach((detail) => {
+    detail.addEventListener('click', (event) => {
+        if (event.target === detail) {
+            closeWorkDetail(detail);
+        }
     });
 });
